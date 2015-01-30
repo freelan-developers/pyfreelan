@@ -1,0 +1,3 @@
+"""
+pyfreelan tests.
+"""

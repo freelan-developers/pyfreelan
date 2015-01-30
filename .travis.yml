@@ -1,0 +1,11 @@
+language: python
+python:
+  - "2.7"
+install:
+  - pip install -r dev_requirements.txt
+  - pip install --editable .
+script: nosetests --with-coverage
+notifications:
+    email:
+        on_success: change
+        on_failure: always
