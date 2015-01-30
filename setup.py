@@ -25,6 +25,7 @@ application.
     ]),
     install_requires=[
         'tornado >= 4.0, < 5',
+        'Flask == 0.10.1',
     ],
     entry_points={
         'console_scripts': [
