@@ -4,7 +4,8 @@ python:
 install:
   - pip install -r dev_requirements.txt
   - pip install --editable .
-script: nosetests --with-coverage
+script: nosetests --with-coverage --cover-package=pyfreelan
+after_success: coveralls
 notifications:
     email:
         on_success: change
