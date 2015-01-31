@@ -43,5 +43,6 @@ application.
         'Programming Language :: Python',
         'Topic :: Software Development',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Development Status :: 2 - Pre-Alpha',
     ],
 )
