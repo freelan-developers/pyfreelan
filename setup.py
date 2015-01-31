@@ -40,7 +40,7 @@ application.
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
         'Operating System :: POSIX',
-        'Programming Language :: Python',
+        'Programming Language :: Python :: 2.7',
         'Topic :: Software Development',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Development Status :: 2 - Pre-Alpha',
