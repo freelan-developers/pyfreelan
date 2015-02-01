@@ -29,8 +29,8 @@ application.
     ],
     entry_points={
         'console_scripts': [
-            'pyfreelan_server = pyfreelan.main:server_main',
-            'pyfreelan_client = pyfreelan.main:client_main',
+            'pyfreelan-server = pyfreelan.main:server_main',
+            'pyfreelan-client = pyfreelan.main:client_main',
         ],
     },
     test_suite='tests',
