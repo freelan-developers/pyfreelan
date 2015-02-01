@@ -21,4 +21,4 @@ def client_main():
     """
     The client entry point.
     """
-    pass
+    IOLoop.instance().start()
