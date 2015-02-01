@@ -2,4 +2,6 @@
 The Flask application.
 """
 
-APP = ''
+from flask import Flask
+
+APP = Flask('pyfreelan')
