@@ -16,7 +16,10 @@ def server_main():
     The server entry point.
     """
     logging.basicConfig()
-    configuration = {}
+    #TODO: Parse the command line arguments.
+    configuration = {
+        'listen_on': '0.0.0.0:12000',
+    }
 
     HTTPServer(reactor=reactor, configuration=configuration)
     reactor.run()
