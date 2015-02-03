@@ -24,7 +24,7 @@ application.
         'tests',
     ]),
     install_requires=[
-        'tornado >= 4.0, < 5',
+        'Twisted>=15.0.0, < 16.0.0',
         'Flask == 0.10.1',
     ],
     entry_points={

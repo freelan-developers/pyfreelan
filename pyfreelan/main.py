@@ -2,23 +2,29 @@
 Entry points for pyfreelan.
 """
 
-from tornado.ioloop import IOLoop
+import logging
+
+from twisted.internet import reactor
 
 from .server import HTTPServer
+
+LOGGER = logging.getLogger(__name__)
 
 
 def server_main():
     """
     The server entry point.
     """
+    logging.basicConfig()
     configuration = {}
 
-    HTTPServer(configuration=configuration)
-    IOLoop.instance().start()
+    HTTPServer(reactor=reactor, configuration=configuration)
+    reactor.run()
 
 
 def client_main():
     """
     The client entry point.
     """
-    IOLoop.instance().start()
+    logging.basicConfig()
+    reactor.run()
