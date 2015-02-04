@@ -2,6 +2,7 @@
 pyfreelan server interface.
 """
 
+from flask import g
 from twisted.web.server import Site
 from twisted.web.wsgi import WSGIResource
 from urlparse import urlparse
@@ -41,14 +42,22 @@ class HTTPServer(object):
     A HTTP server.
     """
 
-    def __init__(self, reactor, configuration):
+    def __init__(self, reactor, configuration, callbacks):
         """
         Initialize the HTTP server with the specified `configuration`.
 
         :param reactor: The reactor to bind to.
-        :param configuration: The configuration as given by the FreeLAN core.
+        :param configuration: The configuration, as given by the FreeLAN core.
+        :param callbacks: The callbacks, as given by the FreeLAN core.
         """
-        self.resource = WSGIResource(reactor, reactor.getThreadPool(), APP)
+        @APP.before_request
+        def associate_http_server():
+            g.http_server = self
+
+        self.configuration = configuration
+        self.callbacks = callbacks
+        self.app = APP
+        self.resource = WSGIResource(reactor, reactor.getThreadPool(), self.app)
         self.site = Site(self.resource)
 
         hostname, port = parse_endpoint(configuration['listen_on'])

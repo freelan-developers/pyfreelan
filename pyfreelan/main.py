@@ -20,8 +20,13 @@ def server_main():
     configuration = {
         'listen_on': '0.0.0.0:12000',
     }
+    callbacks = {}
 
-    HTTPServer(reactor=reactor, configuration=configuration)
+    HTTPServer(
+        reactor=reactor,
+        configuration=configuration,
+        callbacks=callbacks,
+    )
     reactor.run()
 
 

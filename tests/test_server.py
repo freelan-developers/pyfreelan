@@ -5,6 +5,7 @@ Test the web server.
 import mock
 
 from unittest import TestCase
+from flask import g
 
 from pyfreelan.server import (
     parse_endpoint,
@@ -40,11 +41,38 @@ class ServerTests(TestCase):
         configuration = {
             'listen_on': '0.0.0.0:1234',
         }
+        callbacks = {
+            'sign_certificate_request': None,
+        }
 
-        server = HTTPServer(reactor=reactor, configuration=configuration)
+        server = HTTPServer(
+            reactor=reactor,
+            configuration=configuration,
+            callbacks=callbacks,
+        )
 
         reactor.listenTCP.assert_called_once_with(
             1234,
             server.site,
             interface='0.0.0.0',
         )
+        self.assertEqual(configuration, server.configuration)
+        self.assertEqual(callbacks, server.callbacks)
+
+    def test_http_server_registers_into_the_application_context(self):
+        reactor = mock.MagicMock()
+        configuration = {
+            'listen_on': '0.0.0.0:1234',
+        }
+        callbacks = {}
+
+        server = HTTPServer(
+            reactor=reactor,
+            configuration=configuration,
+            callbacks=callbacks,
+        )
+
+        with server.app.test_request_context('/'):
+            self.assertFalse(hasattr(g, 'http_server'))
+            server.app.preprocess_request()
+            self.assertEqual(getattr(g, 'http_server', None), server)
