@@ -2,6 +2,7 @@
 Entry points for pyfreelan.
 """
 
+import os
 import logging
 
 from twisted.internet import reactor
@@ -19,6 +20,7 @@ def server_main():
     #TODO: Parse the command line arguments.
     configuration = {
         'listen_on': '0.0.0.0:12000',
+        'secret_key': os.urandom(24),
     }
     callbacks = {}
 

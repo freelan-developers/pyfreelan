@@ -40,6 +40,7 @@ class ServerTests(TestCase):
         reactor = mock.MagicMock()
         configuration = {
             'listen_on': '0.0.0.0:1234',
+            'secret_key': 'secret',
         }
         callbacks = {
             'sign_certificate_request': None,
@@ -63,6 +64,7 @@ class ServerTests(TestCase):
         reactor = mock.MagicMock()
         configuration = {
             'listen_on': '0.0.0.0:1234',
+            'secret_key': 'secret',
         }
         callbacks = {}
 

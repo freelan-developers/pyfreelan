@@ -26,6 +26,7 @@ application.
     install_requires=[
         'Twisted>=15.0.0, < 16.0.0',
         'Flask == 0.10.1',
+        'Flask-Login==0.2.11',
         'py2-ipaddress == 2.0',
     ],
     entry_points={

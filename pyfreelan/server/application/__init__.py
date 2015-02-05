@@ -10,22 +10,25 @@ from flask import (
     g,
     make_response,
 )
-from .exceptions import UnexpectedFormat
+from flask.ext.login import login_required
+
+from .security import LOGIN_MANAGER
+from .exceptions import (
+    HTTPException,
+    UnexpectedFormat,
+)
 
 APP = Flask('pyfreelan')
+LOGIN_MANAGER.init_app(APP)
 
 
-
-
-
-
-
-@APP.errorhandler(UnexpectedFormat)
+@APP.errorhandler(HTTPException)
 def handle_unexpected_format(error):
     return error.to_response()
 
 
 @APP.route('/')
+@login_required
 def index():
     return jsonify(
         {
@@ -39,6 +42,7 @@ def index():
 
 
 @APP.route('/request_certificate/', methods={'POST'})
+@login_required
 def request_certificate():
     try:
         der_certificate = g.http_server.callbacks['sign_certificate_request'](

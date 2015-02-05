@@ -62,3 +62,5 @@ class HTTPServer(object):
 
         hostname, port = parse_endpoint(configuration['listen_on'])
         reactor.listenTCP(port, self.site, interface=hostname)
+
+        self.app.secret_key = self.configuration['secret_key']
