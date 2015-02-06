@@ -5,6 +5,7 @@ Tests web server views.
 import json
 import mock
 
+from datetime import datetime
 from unittest import TestCase
 from contextlib import contextmanager
 from base64 import b64encode
@@ -164,3 +165,37 @@ class WebServerViewsTests(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/x-x509-cert', response.content_type)
         self.assertIn(der_ca_certificate, response.data)
+
+    def test_register(self):
+        der_certificate = 'der_certificate'
+
+        def register(der_certificate):
+            return {
+                'expiration_timestamp': datetime.now(),
+            }
+
+        with self.with_credentials(True), self.register_callback(register):
+            response = self.client.post(
+                '/register/',
+                data=der_certificate,
+            )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('application/json', response.content_type)
+        self.assertIn('expiration_timestamp', set(json.loads(response.data)))
+
+    def test_register_failure_returns_406(self):
+        der_certificate = 'der_certificate'
+
+        def register(der_certificate):
+            raise ValueError
+
+        with self.with_credentials(True), self.register_callback(register):
+            response = self.client.post(
+                '/register/',
+                data=der_certificate,
+            )
+
+        self.assertEqual(406, response.status_code)
+        self.assertEqual('application/json', response.content_type)
+        self.assertIn('message', set(json.loads(response.data)))

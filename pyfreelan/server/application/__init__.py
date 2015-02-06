@@ -104,3 +104,19 @@ def request_ca_certificate():
     response = make_response(der_ca_certificate)
     response.mimetype = 'application/x-x509-cert'
     return response
+
+
+@APP.route('/register/', methods={'POST'})
+@log_activity
+@login_required
+def register():
+    try:
+        registration = g.http_server.callbacks['register'](
+            der_certificate=request.data,
+        )
+    except ValueError:
+        raise UnexpectedFormat(
+            "Unable to read the specified certificate.",
+        )
+
+    return jsonify(registration)

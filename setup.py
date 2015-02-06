@@ -28,6 +28,7 @@ application.
         'Flask == 0.10.1',
         'Flask-Login==0.2.11',
         'py2-ipaddress == 2.0',
+        'python-dateutil >= 2.4.0, < 3.0.0',
     ],
     entry_points={
         'console_scripts': [
