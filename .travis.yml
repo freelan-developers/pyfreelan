@@ -5,6 +5,7 @@ install:
   - pip install -r dev_requirements.txt
   - pip install --editable .
 script:
+  - pep8 --count pyfreelan tests
   - coverage run --source=pyfreelan setup.py nosetests --with-doctest
   - coverage report
 after_success: coveralls

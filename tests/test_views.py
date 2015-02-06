@@ -121,7 +121,8 @@ class WebServerViewsTests(TestCase):
             if der_certificate_request:
                 return der_certificate
 
-        with self.with_credentials(True), self.register_callback(sign_certificate_request):
+        with self.with_credentials(True), \
+                self.register_callback(sign_certificate_request):
             response = self.client.post(
                 '/request_certificate/',
                 data=der_certificate_request,
@@ -137,7 +138,8 @@ class WebServerViewsTests(TestCase):
         def sign_certificate_request(der_certificate_request):
             raise ValueError
 
-        with self.with_credentials(True), self.register_callback(sign_certificate_request):
+        with self.with_credentials(True), \
+                self.register_callback(sign_certificate_request):
             response = self.client.post(
                 '/request_certificate/',
                 data=der_certificate_request,
@@ -153,7 +155,8 @@ class WebServerViewsTests(TestCase):
         def get_ca_certificate():
             return der_ca_certificate
 
-        with self.with_credentials(True), self.register_callback(get_ca_certificate):
+        with self.with_credentials(True), \
+                self.register_callback(get_ca_certificate):
             response = self.client.post(
                 '/request_ca_certificate/',
             )

@@ -45,7 +45,7 @@ def server_main():
         "pyfreelan-server is a test HTTP(S) server and is *NOT* suitable for "
         "production use !"
     )
-    #TODO: Parse the command line arguments.
+    # TODO: Parse the command line arguments.
     LOGGER.setLevel(logging.DEBUG)
     configuration = {
         'listen_on': '0.0.0.0:12000',

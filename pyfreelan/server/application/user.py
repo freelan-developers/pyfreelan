@@ -4,6 +4,7 @@ A user class, as required by flask_login.
 
 from flask.ext.login import UserMixin
 
+
 class User(UserMixin):
     """
     Represents a user.

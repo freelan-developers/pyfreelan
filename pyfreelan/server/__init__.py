@@ -57,7 +57,11 @@ class HTTPServer(object):
         self.configuration = configuration
         self.callbacks = callbacks
         self.app = APP
-        self.resource = WSGIResource(reactor, reactor.getThreadPool(), self.app)
+        self.resource = WSGIResource(
+            reactor,
+            reactor.getThreadPool(),
+            self.app,
+        )
         self.site = Site(self.resource)
 
         hostname, port = parse_endpoint(configuration['listen_on'])
