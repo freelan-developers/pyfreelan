@@ -8,7 +8,9 @@ import mock
 from unittest import TestCase
 from contextlib import contextmanager
 from base64 import b64encode
+from functools import wraps
 from flask import g
+from flask.testing import FlaskClient
 
 from pyfreelan.server.application import APP
 
@@ -33,18 +35,10 @@ class WebServerViewsTests(TestCase):
             yield
 
     @contextmanager
-    def enable_credentials(self, result):
+    def with_credentials(self, result):
         username = 'user1'
         password = 'password'
-
-        def authenticate_user(*args, **kwargs):
-            return result
-
-        with self.register_callback(authenticate_user):
-            yield self.get_credentials(username, password)
-
-    def get_credentials(self, username, password):
-        return {
+        authentication_headers = {
             'Authorization': 'Basic {}'.format(
                 b64encode('{username}:{password}'.format(
                     username=username,
@@ -53,24 +47,57 @@ class WebServerViewsTests(TestCase):
             ),
         }
 
+        def authenticate_user(*args, **kwargs):
+            return result
+
+        @contextmanager
+        def patch_method(method):
+            original_method = getattr(FlaskClient, method)
+
+            @wraps(original_method)
+            def wrapper(*args, **kwargs):
+                headers = kwargs.setdefault('headers', {})
+                headers.update(authentication_headers)
+                return original_method(*args, **kwargs)
+
+            with mock.patch(
+                'flask.testing.FlaskClient.{}'.format(method),
+                wrapper,
+            ) as mocked:
+                yield mocked
+
+        @contextmanager
+        def patch_methods(methods):
+            if methods:
+                with patch_method(methods[0]), patch_methods(methods[1:]):
+                    yield
+            else:
+                yield
+
+        methods = ['get', 'post', 'put', 'delete']
+
+        with self.register_callback(authenticate_user), patch_methods(methods):
+            yield result
+
     def test_index(self):
         indexes = {
             'index',
             'request_certificate',
         }
 
-        with self.enable_credentials(True) as credentials:
-            response = self.client.get('/', headers=credentials)
+        with self.with_credentials(True):
+            response = self.client.get('/')
 
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/json', response.content_type)
         self.assertEqual(indexes, set(json.loads(response.data)))
 
     def test_index_with_existing_session(self):
-        with self.enable_credentials(True) as credentials:
-            response = self.client.get('/', headers=credentials)
+        with self.with_credentials(True):
+            response = self.client.get('/')
             self.assertEqual(200, response.status_code)
 
+        with self.with_credentials(False):
             response = self.client.get('/')
             self.assertEqual(200, response.status_code)
 
@@ -80,8 +107,8 @@ class WebServerViewsTests(TestCase):
         self.assertEqual('application/json', response.content_type)
 
     def test_index_with_invalid_credentials(self):
-        with self.enable_credentials(False) as credentials:
-            response = self.client.get('/', headers=credentials)
+        with self.with_credentials(False):
+            response = self.client.get('/')
 
         self.assertEqual(401, response.status_code)
         self.assertEqual('application/json', response.content_type)
@@ -94,13 +121,11 @@ class WebServerViewsTests(TestCase):
             if der_certificate_request:
                 return der_certificate
 
-        with self.enable_credentials(True) as credentials:
-            with self.register_callback(sign_certificate_request):
-                response = self.client.post(
-                    '/request_certificate/',
-                    data=der_certificate_request,
-                    headers=credentials,
-                )
+        with self.with_credentials(True), self.register_callback(sign_certificate_request):
+            response = self.client.post(
+                '/request_certificate/',
+                data=der_certificate_request,
+            )
 
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/x-x509-cert', response.content_type)
@@ -112,13 +137,11 @@ class WebServerViewsTests(TestCase):
         def sign_certificate_request(der_certificate_request):
             raise ValueError
 
-        with self.enable_credentials(True) as credentials:
-            with self.register_callback(sign_certificate_request):
-                response = self.client.post(
-                    '/request_certificate/',
-                    data=der_certificate_request,
-                    headers=credentials,
-                )
+        with self.with_credentials(True), self.register_callback(sign_certificate_request):
+            response = self.client.post(
+                '/request_certificate/',
+                data=der_certificate_request,
+            )
 
         self.assertEqual(406, response.status_code)
         self.assertEqual('application/json', response.content_type)
@@ -130,12 +153,10 @@ class WebServerViewsTests(TestCase):
         def get_ca_certificate():
             return der_ca_certificate
 
-        with self.enable_credentials(True) as credentials:
-            with self.register_callback(get_ca_certificate):
-                response = self.client.post(
-                    '/request_ca_certificate/',
-                    headers=credentials,
-                )
+        with self.with_credentials(True), self.register_callback(get_ca_certificate):
+            response = self.client.post(
+                '/request_ca_certificate/',
+            )
 
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/x-x509-cert', response.content_type)
