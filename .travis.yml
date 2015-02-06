@@ -5,7 +5,7 @@ install:
   - pip install -r dev_requirements.txt
   - pip install --editable .
 script:
-  - coverage run --source=pyfreelan setup.py nosetests
+  - coverage run --source=pyfreelan setup.py nosetests --with-doctest
   - coverage report
 after_success: coveralls
 notifications:
