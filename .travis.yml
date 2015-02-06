@@ -7,7 +7,7 @@ install:
 script:
   - pep8 --count pyfreelan tests
   - coverage run --source=pyfreelan setup.py nosetests --with-doctest
-  - coverage report
+  - coverage report -m --fail-under=100
 after_success: coveralls
 notifications:
     email:
