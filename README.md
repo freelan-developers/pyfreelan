@@ -4,7 +4,7 @@
 [![Wheel Status](https://pypip.in/wheel/pyfreelan/badge.png?branch=master)](https://pypi.python.org/pypi/pyfreelan)
 [![License](https://img.shields.io/pypi/l/pyfreelan.svg)](http://www.gnu.org/licenses/gpl-3.0-standalone.html)
 [![GitHub Tag](https://img.shields.io/github/tag/freelan-developers/pyfreelan.svg)](https://github.com/freelan-developers/pyfreelan)
-[![Latest Release](https://img.shields.io/pypi/v/freelan-developers/pyfreelan.svg)](https://pypi.python.org/pypi/pyfreelan)
+[![Latest Release](https://img.shields.io/pypi/v/pyfreelan.svg)](https://pypi.python.org/pypi/pyfreelan)
 
 # pyfreelan
 
