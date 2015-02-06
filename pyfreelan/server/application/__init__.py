@@ -93,3 +93,14 @@ def request_certificate():
     response = make_response(der_certificate)
     response.mimetype = 'application/x-x509-cert'
     return response
+
+
+@APP.route('/request_ca_certificate/', methods={'POST'})
+@log_activity
+@login_required
+def request_ca_certificate():
+    der_ca_certificate = g.http_server.callbacks['get_ca_certificate']()
+
+    response = make_response(der_ca_certificate)
+    response.mimetype = 'application/x-x509-cert'
+    return response

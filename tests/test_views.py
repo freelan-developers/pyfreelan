@@ -123,3 +123,20 @@ class WebServerViewsTests(TestCase):
         self.assertEqual(406, response.status_code)
         self.assertEqual('application/json', response.content_type)
         self.assertIn('message', set(json.loads(response.data)))
+
+    def test_request_ca_certificate(self):
+        der_ca_certificate = 'der_ca_certificate'
+
+        def get_ca_certificate():
+            return der_ca_certificate
+
+        with self.enable_credentials(True) as credentials:
+            with self.register_callback(get_ca_certificate):
+                response = self.client.post(
+                    '/request_ca_certificate/',
+                    headers=credentials,
+                )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('application/x-x509-cert', response.content_type)
+        self.assertIn(der_ca_certificate, response.data)
