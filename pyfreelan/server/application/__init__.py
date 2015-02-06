@@ -21,9 +21,11 @@ from .exceptions import (
     HTTPException,
     UnexpectedFormat,
 )
+from jsonutils import ISODateJSONEncoder
 from ...log import LOGGER
 
 APP = Flask('pyfreelan')
+APP.json_encoder = ISODateJSONEncoder
 LOGIN_MANAGER.init_app(APP)
 
 

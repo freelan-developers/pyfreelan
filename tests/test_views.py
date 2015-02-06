@@ -4,6 +4,7 @@ Tests web server views.
 
 import json
 import mock
+import dateutil.parser
 
 from datetime import datetime
 from unittest import TestCase
@@ -167,11 +168,12 @@ class WebServerViewsTests(TestCase):
         self.assertIn(der_ca_certificate, response.data)
 
     def test_register(self):
+        now = datetime.now()
         der_certificate = 'der_certificate'
 
         def register(der_certificate):
             return {
-                'expiration_timestamp': datetime.now(),
+                'expiration_timestamp': now,
             }
 
         with self.with_credentials(True), self.register_callback(register):
@@ -182,7 +184,13 @@ class WebServerViewsTests(TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/json', response.content_type)
-        self.assertIn('expiration_timestamp', set(json.loads(response.data)))
+
+        registration = json.loads(response.data)
+        print registration
+        expiration_timestamp = dateutil.parser.parse(
+            registration['expiration_timestamp'],
+        )
+        self.assertEqual(expiration_timestamp, now)
 
     def test_register_failure_returns_406(self):
         der_certificate = 'der_certificate'
