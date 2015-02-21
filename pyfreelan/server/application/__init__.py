@@ -122,3 +122,12 @@ def register():
         )
 
     return jsonify(registration)
+
+
+@APP.route('/unregister/', methods={'POST'})
+@log_activity
+@login_required
+def unregister():
+    g.http_server.callbacks['unregister']()
+
+    return make_response('', 204)

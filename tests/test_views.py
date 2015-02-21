@@ -207,3 +207,14 @@ class WebServerViewsTests(TestCase):
         self.assertEqual(406, response.status_code)
         self.assertEqual('application/json', response.content_type)
         self.assertIn('message', set(json.loads(response.data)))
+
+    def test_unregister(self):
+        def unregister():
+            pass
+
+        with self.with_credentials(True), self.register_callback(unregister):
+            response = self.client.post(
+                '/unregister/',
+            )
+
+        self.assertEqual(204, response.status_code)
