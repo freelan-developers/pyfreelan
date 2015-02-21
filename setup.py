@@ -6,13 +6,13 @@ from setuptools import (
 )
 
 python2_install_requires = [
-    'py2-ipaddress == 2.0',
+    'py2-ipaddress >= 2.0',
 ]
 common_install_requires = [
-    'Twisted>=15.0.0, < 16.0.0',
-    'Flask == 0.10.1',
-    'Flask-Login==0.2.11',
-    'python-dateutil >= 2.4.0, < 3.0.0',
+    'Twisted>=15.0.0',
+    'Flask >= 0.10.1',
+    'Flask-Login >= 0.2.11',
+    'python-dateutil >= 2.4.0',
 ]
 
 if sys.version_info >= (3, 0):
