@@ -54,4 +54,6 @@ docs/_build/
 target/
 
 # Virtualenv
-.pyfreelan
+.pyfreelan2.7
+.pyfreelan3.3
+.pyfreelan3.4
