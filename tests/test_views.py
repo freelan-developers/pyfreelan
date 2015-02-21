@@ -186,7 +186,6 @@ class WebServerViewsTests(TestCase):
         self.assertEqual('application/json', response.content_type)
 
         registration = json.loads(response.data)
-        print registration
         expiration_timestamp = dateutil.parser.parse(
             registration['expiration_timestamp'],
         )
