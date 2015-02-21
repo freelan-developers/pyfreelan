@@ -1,7 +1,24 @@
+import sys
+
 from setuptools import (
     setup,
     find_packages,
 )
+
+python2_install_requires = [
+    'py2-ipaddress == 2.0',
+]
+common_install_requires = [
+    'Twisted>=15.0.0, < 16.0.0',
+    'Flask == 0.10.1',
+    'Flask-Login==0.2.11',
+    'python-dateutil >= 2.4.0, < 3.0.0',
+]
+
+if sys.version_info >= (3, 0):
+    install_requires = common_install_requires
+else:
+    install_requires = common_install_requires + python2_install_requires
 
 setup(
     name='pyfreelan',
@@ -23,13 +40,7 @@ application.
     packages=find_packages(exclude=[
         'tests',
     ]),
-    install_requires=[
-        'Twisted>=15.0.0, < 16.0.0',
-        'Flask == 0.10.1',
-        'Flask-Login==0.2.11',
-        'py2-ipaddress == 2.0',
-        'python-dateutil >= 2.4.0, < 3.0.0',
-    ],
+    install_requires=install_requires,
     entry_points={
         'console_scripts': [
             'pyfreelan-server = pyfreelan.main:server_main',
