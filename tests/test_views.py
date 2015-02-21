@@ -217,3 +217,41 @@ class WebServerViewsTests(TestCase):
             )
 
         self.assertEqual(204, response.status_code)
+
+    def test_set_contact_information(self):
+        def set_contact_information(public_endpoints):
+            accepted_endpoints = public_endpoints[0:1]
+            rejected_endpoints = public_endpoints[1:]
+            return accepted_endpoints, rejected_endpoints
+
+        accepted_endpoints = [
+            '0.0.0.0:12000',
+        ]
+        rejected_endpoints = [
+            '[::]:1234',
+            '127.0.0.1:8888',
+        ]
+        contact_information = {
+            'public_endpoints': accepted_endpoints + rejected_endpoints,
+        }
+
+        with self.with_credentials(True), \
+                self.register_callback(set_contact_information):
+            response = self.client.post(
+                '/set_contact_information/',
+                data=json.dumps(contact_information),
+                headers={'content-type': 'application/json'},
+            )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('application/json', response.content_type)
+
+        result = json.loads(response.data)
+        self.assertEqual(
+            accepted_endpoints,
+            result['accepted_endpoints'],
+        )
+        self.assertEqual(
+            rejected_endpoints,
+            result['rejected_endpoints'],
+        )

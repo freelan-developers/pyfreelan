@@ -131,3 +131,34 @@ def unregister():
     g.http_server.callbacks['unregister']()
 
     return make_response('', 204)
+
+
+@APP.route('/set_contact_information/', methods={'POST'})
+@log_activity
+@login_required
+def set_contact_information():
+    """
+    Set contact information.
+
+    Expects JSON data in the following format:
+
+        {
+            "public_endpoints": [
+                "0.0.0.0:12000",
+                "[::]:1234"
+            ]
+        }
+    """
+    contact_information = request.get_json()
+
+    (
+        accepted_endpoints,
+        rejected_endpoints,
+    ) = g.http_server.callbacks['set_contact_information'](
+        contact_information.get('public_endpoints', []),
+    )
+
+    return jsonify({
+        'accepted_endpoints': accepted_endpoints,
+        'rejected_endpoints': rejected_endpoints,
+    })
