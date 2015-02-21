@@ -159,7 +159,7 @@ class WebServerViewsTests(TestCase):
 
         with self.with_credentials(True), \
                 self.register_callback(get_ca_certificate):
-            response = self.client.post(
+            response = self.client.get(
                 '/request_ca_certificate/',
             )
 

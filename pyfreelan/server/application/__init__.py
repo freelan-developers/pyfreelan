@@ -97,7 +97,7 @@ def request_certificate():
     return response
 
 
-@APP.route('/request_ca_certificate/', methods={'POST'})
+@APP.route('/request_ca_certificate/', methods={'GET'})
 @log_activity
 @login_required
 def request_ca_certificate():
