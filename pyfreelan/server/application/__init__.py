@@ -162,3 +162,30 @@ def set_contact_information():
         'accepted_endpoints': accepted_endpoints,
         'rejected_endpoints': rejected_endpoints,
     })
+
+
+@APP.route('/get_contact_information/', methods={'POST'})
+@log_activity
+@login_required
+def get_contact_information():
+    """
+    get contact information.
+
+    Expects JSON data in the following format:
+
+        {
+            "requested_contacts": [
+                "YWxwaGE=",
+                "YmV0YQ==",
+            ]
+        }
+    """
+    contact_information = request.get_json()
+
+    contacts = g.http_server.callbacks['get_contact_information'](
+        contact_information.get('requested_contacts', []),
+    )
+
+    return jsonify({
+        'contacts': contacts,
+    })

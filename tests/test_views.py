@@ -255,3 +255,37 @@ class WebServerViewsTests(TestCase):
             rejected_endpoints,
             result['rejected_endpoints'],
         )
+
+    def test_get_contact_information(self):
+        def get_contact_information(requested_contacts):
+            return {
+                hash: [
+                    "127.0.0.1:12000",
+                    "[::]:12000",
+                ]
+                for hash in requested_contacts
+            }
+
+        contact_information = {
+            'requested_contacts': [
+                "YWxwaGE=",
+                "YmV0YQ==",
+            ]
+        }
+
+        with self.with_credentials(True), \
+                self.register_callback(get_contact_information):
+            response = self.client.post(
+                '/get_contact_information/',
+                data=json.dumps(contact_information),
+                headers={'content-type': 'application/json'},
+            )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual('application/json', response.content_type)
+
+        result = json.loads(response.data)
+        self.assertEqual(
+            set(contact_information['requested_contacts']),
+            set(result['contacts']),
+        )
